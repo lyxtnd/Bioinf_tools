@@ -29,8 +29,8 @@ def demonstrate_vcf(filename: str) -> None:
         print("\n2. Заголовок файла")
         print(f"Формат VCF: {header.file_format}")
         print(f"Референсный геном: {reader.get_reference_genome()}")
-        print(f"Колонки: {header.columns}")
-        print(f"Образцы: {header.samples}")
+        print(f"Первые 20 колонок: {header.columns[:20]}")
+        print(f"Первые 20 oбразцов: {header.samples[:20]}")
         print(f"Количество строк метаданных: {len(header.metadata)}")
 
         # 3. Получение хромосом

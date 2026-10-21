@@ -388,9 +388,6 @@ def _median(values)-> float:
 # Каждая функция принимает необязательный ax — это позволяет как рисовать
 # график отдельно (plot_per_base_quality(parser)), так и собрать все три
 # на одной фигуре (см. plot_all).
-#
-# Все функции возвращают ax — это удобно, если вызывающий код хочет
-# дорисовать что-то поверх (например, горизонтальную линию на Q=20).
 
 
 def plot_per_base_quality(parser, ax=None):
@@ -500,10 +497,7 @@ def plot_per_base_content(parser, ax=None):
 
     ax.set_title("Per base sequence content")
 
-    # Легенда. fontsize=8 — чтобы не закрывала линии. Местоположение
-    # не указано -> matplotlib выберет «лучшее» место (best), обычно
-    # там, где меньше всего данных. Для этого графика часто это
-    # правый верхний или правый нижний угол.
+    # Легенда. fontsize=8 — чтобы не закрывала линии. 
     ax.legend(loc='upper right',fontsize=8)
 
     # Полупрозрачная сетка — помогает читать значения, но не
@@ -566,7 +560,7 @@ def parser_factory():
     return FastqParser(path)
 
 def plot_all(parser_factory, output_path):
-    """Собрать все три графика на одной фигуре и (опционально) сохранить PNG.
+    """Собрать все три графика на одной фигуре и  сохранить PNG.
 
     ПОЧЕМУ ПАРАМЕТР — ФАБРИКА, А НЕ ПАРСЕР:
         FastqParser одноразовый: после полного прохода
@@ -639,14 +633,3 @@ def plot_all(parser_factory, output_path):
     # Возвращаем fig 
     return fig
 
-# __name__ встроенная переменная каждого модуля — строка с его именем
-# "__main__"	специальное значение, которое __name__ получает, когда файл запущен напрямую
-# код выполняется только если файл запущен напрямую (python FASTQ.py), а не если его импортировали
-if __name__ == "__main__":
-    path=input("Введите путь к файлу:")
-    compressed = input("Файл сжат gzip? (y/n): ").lower() == "y"
-    p = FastqParser(path)
-    print("Записей:", p.count_sequences())
-    print("Средняя длина:", p.average_length())
-    plot_all(parser_factory, "report.png")
-    print("Готово: report.png")

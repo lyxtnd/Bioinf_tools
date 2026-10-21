@@ -229,4 +229,193 @@ class SamReader(GenomicDataReader):
                 if not line.strip() or line.startswith("@"):
                     continue
 
-                alignment = self._
+                alignment = self._parse_line(line)
+                if alignment is not None:
+                    yield alignment
+
+    def read_alignments(self) -> list[Alignment]:
+        """Считывает все выравнивания из SAM-файла в список.
+
+        Returns:
+            Список объектов Alignment.
+        """
+        return list(self.read())
+
+    def get_header(self) -> SamHeader:
+        """Извлекает заголовок SAM-файла.
+
+        Собирает все строки метаданных, начинающиеся с символа '@'.
+
+        Returns:
+            Объект SamHeader с информацией из заголовка.
+        """
+        raw_header_lines: list[str] = []
+        with open(self.filename, "r", encoding="utf-8", errors="replace") as file:
+            for line in file:
+                if line.startswith("@"):
+                    raw_header_lines.append(line.strip())
+                elif line.strip():
+                    break
+        return SamHeader(raw_header_lines)
+
+    def get_chromosomes(self) -> list[str]:
+        """Возвращает список уникальных хромосом, представленных в файле.
+
+        Хромосомы извлекаются из заголовков @SQ либо собираются непосредственно
+        из записей выравнивания при отсутствии заголовка.
+
+        Returns:
+            list[str]: Список названий хромосом.
+        """
+        sq_headers = self.get_header().get_group("SQ")
+        if sq_headers:
+            return [sq["SN"] for sq in sq_headers if "SN" in sq]
+
+        chromosomes_list = []
+        chromosomes_set = set()
+
+        for aln in self.read():
+            if aln.rname != "*" and aln.rname not in chromosomes_set:
+                chromosomes_set.add(aln.rname)
+                chromosomes_list.append(aln.rname)
+
+        return chromosomes_list
+
+    def get_reference_genome(self) -> str:
+        """Возвращает информацию о референсном геноме.
+
+        Извлекает название или описание референсного генома
+        из метаданных заголовка SAM-файла.
+
+        Returns:
+            Информация о референсном геноме или сообщение,
+            если она не указана в заголовке.
+        """
+        reference = self.get_header().reference
+        if reference:
+            return reference
+        else:
+            return "Информация о референсном геноме не указана"
+
+    def validate_coordinate(self, chrom: str, pos: int) -> bool:
+        """Проверяет корректность геномной координаты.
+
+        Проверяет, существует ли указанная хромосома, является ли
+        позиция положительной и не превышает ли она длину хромосомы,
+        если длина указана в метаданных @SQ.
+
+        Args:
+            chrom: Название хромосомы.
+            pos: Геномная позиция для проверки.
+
+        Returns:
+            True, если координата считается допустимой, иначе False.
+        """
+        if pos < 1:
+            return False
+
+        chromosomes_list = self.get_chromosomes()
+        if chrom not in chromosomes_list:
+            return False
+
+        header = self.get_header()
+        sq_headers = header.get_group("SQ")
+
+        for sq in sq_headers:
+            if sq.get("SN") == chrom:
+                length_str = sq.get("LN")
+                if length_str is not None:
+                    try:
+                        chrom_len = int(length_str)
+                        return pos <= chrom_len
+                    except ValueError:
+                        return False
+                return True
+
+        return True
+
+    def count_alignments(self) -> int:
+        """Подсчитывает общее количество выравниваний в SAM-файле.
+
+        Считывает выравнивания последовательно, не сохраняя их все
+        одновременно в памяти.
+
+        Returns:
+            Общее количество записей с выравниваниями.
+        """
+        cnt = 0
+        for _ in self.read():
+            cnt += 1
+        return cnt
+
+    def count_alignments_by_chromosome(self) -> pd.DataFrame:
+        """Подсчитывает количество выравниваний на каждой хромосоме.
+
+        Собирает названия хромосом в таблицу pandas, группирует записи
+        по хромосоме и подсчитывает количество выравниваний в каждой группе.
+
+        Returns:
+            DataFrame со столбцами chrom и count, содержащими
+            названия хромосом и количество выравниваний соответственно.
+        """
+        data = []
+        for aln in self.read():
+            data.append({"chrom": aln.rname})
+
+        df = pd.DataFrame(data)
+        result = df.groupby("chrom").size().reset_index(name="count")
+        return result
+
+    def get_alignments_in_region(
+        self, chrom: str, start: int, end: int
+    ) -> list[Alignment]:
+        """Возвращает выравнивания, расположенные в заданном геномном интервале.
+
+        Учитывает только картированные выравнивания указанной хромосомы,
+        пересекающие интервал [start, end] (аналог bedtools intersect).
+
+        Args:
+            chrom: Название хромосомы.
+            start: Начальная позиция интервала, начиная с 1.
+            end: Конечная позиция интервала.
+
+        Returns:
+            Список выравниваний, попадающих в заданный интервал.
+
+        Raises:
+            ValueError: Если начальная позиция меньше 1 или конец
+                интервала расположен раньше его начала.
+        """
+        if start > end or start < 1:
+            raise ValueError("Неверно заданы координаты")
+
+        alignments_list = []
+        for aln in self.read():
+            if not aln.is_mapped:
+                continue
+
+            if aln.rname == chrom and aln.pos <= end and aln.end_pos >= start:
+                alignments_list.append(aln)
+
+        return alignments_list
+
+    def filter_alignments(self, flag: int, exact_match: bool = False) -> list[Alignment]:
+        """Фильтрует выравнивания по битовому флагу SAM.
+
+        Args:
+            flag: Битовый флаг для фильтрации.
+            exact_match: Если True, флаг должен совпадать точно;
+                если False, проверяется наличие бита через битовое И.
+
+        Returns:
+            Список выравниваний, удовлетворяющих условию фильтрации.
+        """
+        filtered = []
+        for aln in self.read():
+            if exact_match:
+                if aln.flag == flag:
+                    filtered.append(aln)
+            else:
+                if (aln.flag & flag) == flag:
+                    filtered.append(aln)
+        return filtered

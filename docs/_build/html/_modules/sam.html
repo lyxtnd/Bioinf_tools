@@ -1,0 +1,565 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sam &mdash; документация Bioinf_tools 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e35015f7"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Bioinf_tools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Bioinf_tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bioinf_tools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">sam</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код sam</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abstract_readers</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicDataReader</span>
+
+
+<div class="viewcode-block" id="Alignment">
+<a class="viewcode-back" href="../sam.html#sam.Alignment">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Alignment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Представляет отдельное выравнивание прочтения из SAM-файла.</span>
+
+<span class="sd">    Хранит информацию об имени прочтения, флаге, хромосоме, позиции,</span>
+<span class="sd">    CIGAR-строке, качестве и дополнительных опциональных тегах.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        qname (str): Имя прочтения (Query template NAME).</span>
+<span class="sd">        flag (int): Битовый флаг выравнивания.</span>
+<span class="sd">        rname (str): Название хромосомы/референса.</span>
+<span class="sd">        pos (int): Геномная позиция начала выравнивания (1-based).</span>
+<span class="sd">        mapq (int): Качество выравнивания (Mapping Quality).</span>
+<span class="sd">        cigar (str): CIGAR-строка операций выравнивания.</span>
+<span class="sd">        rnext (str): Хромосома следующего прочтения в паре.</span>
+<span class="sd">        pnext (int): Позиция следующего прочтения в паре.</span>
+<span class="sd">        tlen (int): Наблюдаемая длина фрагмента (Template Length).</span>
+<span class="sd">        seq (str): Нуклеотидная последовательность прочтения.</span>
+<span class="sd">        qual (str): Строка качества Phred.</span>
+<span class="sd">        tags (dict[str, str]): Дополнительные теги выравнивания.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">qname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">rname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">mapq</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">cigar</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">rnext</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pnext</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">tlen</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">qual</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">optional_tags</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Инициализирует объект выравнивания.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            qname: Имя прочтения.</span>
+<span class="sd">            flag: Битовый флаг.</span>
+<span class="sd">            rname: Название хромосомы.</span>
+<span class="sd">            pos: Позиция начала выравнивания.</span>
+<span class="sd">            mapq: Оценка качества картирования.</span>
+<span class="sd">            cigar: CIGAR-строка.</span>
+<span class="sd">            rnext: Хромосома пары.</span>
+<span class="sd">            pnext: Позиция пары.</span>
+<span class="sd">            tlen: Длина вставки.</span>
+<span class="sd">            seq: Последовательность прочтения.</span>
+<span class="sd">            qual: Качество нуклеотидов.</span>
+<span class="sd">            *optional_tags: Необязательные поля тегов формата TAG:TYPE:VALUE.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qname</span> <span class="o">=</span> <span class="n">qname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="n">flag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rname</span> <span class="o">=</span> <span class="n">rname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapq</span> <span class="o">=</span> <span class="n">mapq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span> <span class="o">=</span> <span class="n">cigar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnext</span> <span class="o">=</span> <span class="n">rnext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pnext</span> <span class="o">=</span> <span class="n">pnext</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tlen</span> <span class="o">=</span> <span class="n">tlen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="n">seq</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qual</span> <span class="o">=</span> <span class="n">qual</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">tag_entry</span> <span class="ow">in</span> <span class="n">optional_tags</span><span class="p">:</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">tag_entry</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_mapped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Проверяет, картировано ли прочтение (флаг 0x4).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">rname</span> <span class="o">!=</span> <span class="s2">&quot;*&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">end_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Вычисляет конечную координату выравнивания на референсе по CIGAR.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mapped</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span> <span class="o">==</span> <span class="s2">&quot;*&quot;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">ref_length</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">operations</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+)([MIDNSHP=X])&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">length</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">operations</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">):</span>
+                <span class="n">ref_length</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ref_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Alignment(QNAME=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">qname</span><span class="si">}</span><span class="s2">&#39;, RNAME=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rname</span><span class="si">}</span><span class="s2">&#39;, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;POS=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_pos</span><span class="si">}</span><span class="s2">, MAPQ=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mapq</span><span class="si">}</span><span class="s2">, CIGAR=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cigar</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SamHeader">
+<a class="viewcode-back" href="../sam.html#sam.SamHeader">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SamHeader</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Хранит информацию из заголовка SAM-файла.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        raw_lines (list[str]): Исходные строки заголовка, начинающиеся с &#39;@&#39;.</span>
+<span class="sd">        headers (dict[str, list[dict[str, str]]]): Разобранные группы метаданных</span>
+<span class="sd">            по тегам (HD, SQ, RG, PG, CO).</span>
+<span class="sd">        reference (str | None): Информация о референсном геноме или None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Инициализирует объект заголовка SAM-файла.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            raw_lines: Список исходных строк заголовка.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_lines</span> <span class="o">=</span> <span class="n">raw_lines</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;HD&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;SQ&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;RG&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;PG&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">&quot;CO&quot;</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_headers</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Разбирает строки заголовка на группы по ключевым тегам.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_lines</span><span class="p">:</span>
+            <span class="n">line_str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">line_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+
+            <span class="k">if</span> <span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;CO&quot;</span><span class="p">:</span>
+                <span class="n">comment_text</span> <span class="o">=</span> <span class="n">line_str</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;CO&quot;</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">comment_text</span><span class="p">})</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;reference&quot;</span> <span class="ow">in</span> <span class="n">comment_text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;assembly&quot;</span> <span class="ow">in</span> <span class="n">comment_text</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">comment_text</span>
+                <span class="k">continue</span>
+
+            <span class="n">field_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+                    <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">field_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_dict</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;SQ&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="ow">and</span> <span class="s2">&quot;AS&quot;</span> <span class="ow">in</span> <span class="n">field_dict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">field_dict</span><span class="p">[</span><span class="s2">&quot;AS&quot;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="SamHeader.get_group">
+<a class="viewcode-back" href="../sam.html#sam.SamHeader.get_group">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает информацию по заданной группе заголовков.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag: Название группы, например &#39;PG&#39;, &#39;@PG&#39;, &#39;RG&#39;, &#39;@RG&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список словарей с атрибутами для данной группы заголовков.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">clean_tag</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">clean_tag</span><span class="p">,</span> <span class="p">[])</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SamReader">
+<a class="viewcode-back" href="../sam.html#sam.SamReader">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SamReader</span><span class="p">(</span><span class="n">GenomicDataReader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Читает SAM-файл и предоставляет методы для работы с выравниваниями.</span>
+
+<span class="sd">    Позволяет разбирать отдельные строки выравниваний, читать записи</span>
+<span class="sd">    последовательно через генератор, получать заголовок с метаданными,</span>
+<span class="sd">    считать статистику по хромосомам и искать выравнивания в регионах.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Alignment</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Разбирает строку SAM и создаёт объект Alignment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line: Строка файла, содержащая информацию о выравнивании.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Объект Alignment при успешном разборе или None,</span>
+<span class="sd">            если строка содержит недостаточно полей либо некорректные типы.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">11</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">mapq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+            <span class="n">pnext</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+            <span class="n">tlen</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">Alignment</span><span class="p">(</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">flag</span><span class="p">,</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">pos</span><span class="p">,</span>
+            <span class="n">mapq</span><span class="p">,</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+            <span class="n">pnext</span><span class="p">,</span>
+            <span class="n">tlen</span><span class="p">,</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span>
+            <span class="n">parts</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span>
+            <span class="o">*</span><span class="n">parts</span><span class="p">[</span><span class="mi">11</span><span class="p">:]</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="SamReader.read">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.read">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Последовательно читает выравнивания из SAM-файла.</span>
+
+<span class="sd">        Пропускает пустые строки и строки заголовка.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Alignment: Очередное разобранное выравнивание.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="n">alignment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">alignment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">alignment</span></div>
+
+
+<div class="viewcode-block" id="SamReader.read_alignments">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.read_alignments">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_alignments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Alignment</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Считывает все выравнивания из SAM-файла в список.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список объектов Alignment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="SamReader.get_header">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.get_header">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_header</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SamHeader</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Извлекает заголовок SAM-файла.</span>
+
+<span class="sd">        Собирает все строки метаданных, начинающиеся с символа &#39;@&#39;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Объект SamHeader с информацией из заголовка.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw_header_lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+                    <span class="n">raw_header_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="k">break</span>
+        <span class="k">return</span> <span class="n">SamHeader</span><span class="p">(</span><span class="n">raw_header_lines</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SamReader.get_chromosomes">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.get_chromosomes">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_chromosomes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает список уникальных хромосом, представленных в файле.</span>
+
+<span class="sd">        Хромосомы извлекаются из заголовков @SQ либо собираются непосредственно</span>
+<span class="sd">        из записей выравнивания при отсутствии заголовка.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: Список названий хромосом.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sq_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;SQ&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sq_headers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">sq</span><span class="p">[</span><span class="s2">&quot;SN&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">sq</span> <span class="ow">in</span> <span class="n">sq_headers</span> <span class="k">if</span> <span class="s2">&quot;SN&quot;</span> <span class="ow">in</span> <span class="n">sq</span><span class="p">]</span>
+
+        <span class="n">chromosomes_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">chromosomes_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">aln</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">aln</span><span class="o">.</span><span class="n">rname</span> <span class="o">!=</span> <span class="s2">&quot;*&quot;</span> <span class="ow">and</span> <span class="n">aln</span><span class="o">.</span><span class="n">rname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chromosomes_set</span><span class="p">:</span>
+                <span class="n">chromosomes_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">aln</span><span class="o">.</span><span class="n">rname</span><span class="p">)</span>
+                <span class="n">chromosomes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aln</span><span class="o">.</span><span class="n">rname</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">chromosomes_list</span></div>
+
+
+<div class="viewcode-block" id="SamReader.get_reference_genome">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.get_reference_genome">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_reference_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает информацию о референсном геноме.</span>
+
+<span class="sd">        Извлекает название или описание референсного генома</span>
+<span class="sd">        из метаданных заголовка SAM-файла.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Информация о референсном геноме или сообщение,</span>
+<span class="sd">            если она не указана в заголовке.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span><span class="o">.</span><span class="n">reference</span>
+        <span class="k">if</span> <span class="n">reference</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">reference</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;Информация о референсном геноме не указана&quot;</span></div>
+
+
+<div class="viewcode-block" id="SamReader.validate_coordinate">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.validate_coordinate">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_coordinate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Проверяет корректность геномной координаты.</span>
+
+<span class="sd">        Проверяет, существует ли указанная хромосома, является ли</span>
+<span class="sd">        позиция положительной и не превышает ли она длину хромосомы,</span>
+<span class="sd">        если длина указана в метаданных @SQ.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chrom: Название хромосомы.</span>
+<span class="sd">            pos: Геномная позиция для проверки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True, если координата считается допустимой, иначе False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">chromosomes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chromosomes</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">chrom</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chromosomes_list</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span>
+        <span class="n">sq_headers</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="s2">&quot;SQ&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">sq</span> <span class="ow">in</span> <span class="n">sq_headers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">sq</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SN&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">chrom</span><span class="p">:</span>
+                <span class="n">length_str</span> <span class="o">=</span> <span class="n">sq</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LN&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">length_str</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">chrom_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">length_str</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">chrom_len</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="SamReader.count_alignments">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.count_alignments">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_alignments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Подсчитывает общее количество выравниваний в SAM-файле.</span>
+
+<span class="sd">        Считывает выравнивания последовательно, не сохраняя их все</span>
+<span class="sd">        одновременно в памяти.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Общее количество записей с выравниваниями.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">cnt</span></div>
+
+
+<div class="viewcode-block" id="SamReader.count_alignments_by_chromosome">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.count_alignments_by_chromosome">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_alignments_by_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Подсчитывает количество выравниваний на каждой хромосоме.</span>
+
+<span class="sd">        Собирает названия хромосом в таблицу pandas, группирует записи</span>
+<span class="sd">        по хромосоме и подсчитывает количество выравниваний в каждой группе.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame со столбцами chrom и count, содержащими</span>
+<span class="sd">            названия хромосом и количество выравниваний соответственно.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">aln</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;chrom&quot;</span><span class="p">:</span> <span class="n">aln</span><span class="o">.</span><span class="n">rname</span><span class="p">})</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;chrom&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;count&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="SamReader.get_alignments_in_region">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.get_alignments_in_region">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_alignments_in_region</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Alignment</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает выравнивания, расположенные в заданном геномном интервале.</span>
+
+<span class="sd">        Учитывает только картированные выравнивания указанной хромосомы,</span>
+<span class="sd">        пересекающие интервал [start, end] (аналог bedtools intersect).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chrom: Название хромосомы.</span>
+<span class="sd">            start: Начальная позиция интервала, начиная с 1.</span>
+<span class="sd">            end: Конечная позиция интервала.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список выравниваний, попадающих в заданный интервал.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Если начальная позиция меньше 1 или конец</span>
+<span class="sd">                интервала расположен раньше его начала.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">end</span> <span class="ow">or</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Неверно заданы координаты&quot;</span><span class="p">)</span>
+
+        <span class="n">alignments_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">aln</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">aln</span><span class="o">.</span><span class="n">is_mapped</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">aln</span><span class="o">.</span><span class="n">rname</span> <span class="o">==</span> <span class="n">chrom</span> <span class="ow">and</span> <span class="n">aln</span><span class="o">.</span><span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">aln</span><span class="o">.</span><span class="n">end_pos</span> <span class="o">&gt;=</span> <span class="n">start</span><span class="p">:</span>
+                <span class="n">alignments_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">alignments_list</span></div>
+
+
+<div class="viewcode-block" id="SamReader.filter_alignments">
+<a class="viewcode-back" href="../sam.html#sam.SamReader.filter_alignments">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_alignments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">exact_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Alignment</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Фильтрует выравнивания по битовому флагу SAM.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            flag: Битовый флаг для фильтрации.</span>
+<span class="sd">            exact_match: Если True, флаг должен совпадать точно;</span>
+<span class="sd">                если False, проверяется наличие бита через битовое И.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список выравниваний, удовлетворяющих условию фильтрации.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">aln</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">exact_match</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">aln</span><span class="o">.</span><span class="n">flag</span> <span class="o">==</span> <span class="n">flag</span><span class="p">:</span>
+                    <span class="n">filtered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">aln</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="n">flag</span><span class="p">)</span> <span class="o">==</span> <span class="n">flag</span><span class="p">:</span>
+                    <span class="n">filtered</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aln</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filtered</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Копырина Александра, Асылкожаева Дария, Никонорова Алина, Ким Дианна. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

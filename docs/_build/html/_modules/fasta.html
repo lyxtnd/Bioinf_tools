@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fasta &mdash; документация Bioinf_tools 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e35015f7"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Bioinf_tools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Bioinf_tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bioinf_tools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">fasta</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код fasta</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">abstract_readers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reader</span>
+
+
+<div class="viewcode-block" id="Seq">
+<a class="viewcode-back" href="../fasta.html#fasta.Seq">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Seq</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Класс для работы с биологической последовательностью</span>
+<span class="sd">    Хранит саму последовательность и информацию о ней (заголовок)</span>
+<span class="sd">    Умеет красиво печататься в формате FASTA, считать длину и определять, белок это или нуклеотид</span>
+<span class="sd">    &quot;&quot;&quot;</span>   
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Создаем новую последовательность</span>
+<span class="sd">        </span>
+<span class="sd">        header — это заголовок (мета-информация, название)</span>
+<span class="sd">        sequence — это сама последовательность (буквы)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__header</span> <span class="o">=</span> <span class="n">header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__sequence</span> <span class="o">=</span> <span class="n">sequence</span>
+
+<span class="c1">#геттеры</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает заголовок последовательности&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__header</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает саму последовательность&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sequence</span>
+<span class="c1">#магические методы</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает длину последовательности (чтобы работала функция len())&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sequence</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Красиво печатает последовательность в формате FASTA</span>
+<span class="sd">        То есть сначала заголовок со знаком &gt;, потом сама последовательность</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__header</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__sequence</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Техническое представление объекта (для отладки)</span>
+<span class="sd">        Показывает заголовок и длину</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Seq(header=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__header</span><span class="si">}</span><span class="s2">&#39;, length=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+<span class="c1">#свойство для определения типа последовательности</span>
+    <span class="nd">@property</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">alphabet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Определяет, какой алфавит у последовательности: белковый или нуклеотидный</span>
+<span class="sd">        Работает по стандарту IUPAC</span>
+<span class="sd">        Возвращает &#39;protein&#39;, &#39;nucleotide&#39; или &#39;unknown&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#множество букв, которые есть только в белках</span>
+        <span class="n">protein_only</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="s2">&quot;EFILPQZJ&quot;</span><span class="p">)</span>
+        <span class="c1">#множество всех букв, которые есть в нуклеотидах IUPAC</span>
+        <span class="n">nucleotide_IUPAC</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="s2">&quot;ACGTURYSWKMBDHVN&quot;</span><span class="p">)</span>
+        <span class="c1">#превращаем последовательность в множество уникальных букв</span>
+        <span class="n">seq_letters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sequence</span><span class="p">)</span>
+        <span class="c1">#если пересечение не пустое, есть буквы белков - это белок</span>
+        <span class="k">if</span> <span class="n">seq_letters</span> <span class="o">&amp;</span> <span class="n">protein_only</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;protein&quot;</span>
+        <span class="c1">#если все буквы есть входят в набор нуклеотидов IUPAC - это нуклеотид</span>
+        <span class="k">elif</span> <span class="n">seq_letters</span> <span class="o">&lt;=</span> <span class="n">nucleotide_IUPAC</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;nucleotide&quot;</span>
+        <span class="c1">#если ничего не подошло</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;unknown&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="FastaReader">
+<a class="viewcode-back" href="../fasta.html#fasta.FastaReader">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FastaReader</span><span class="p">(</span><span class="n">Reader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Класс для чтения файлов в формате FASTA.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="c1">#вызываем конструктор родителя (Reader), чтобы сохранить filepath</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> 
+
+<div class="viewcode-block" id="FastaReader.is_valid_fasta">
+<a class="viewcode-back" href="../fasta.html#fasta.FastaReader.is_valid_fasta">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_valid_fasta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Проверяет, что файл действительно в формате FASTA</span>
+<span class="sd">            Для этого смотрит, начинается ли первая непустая строка со знака &gt;</span>
+<span class="sd">            Возвращает True, если формат правильный, и False, если нет</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span> </div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Обрабатывает одну строку файла и преобразует её в запись</span>
+<span class="sd">            Так как одна запись FASTA занимает несколько строк (заголовок + последовательность),</span>
+<span class="sd">            этот метод возвращает не готовую запись, а тип строки и её содержимое</span>
+<span class="sd">            </span>
+<span class="sd">            Возвращает кортеж (&#39;header&#39;, текст) или (&#39;seq&#39;, кусок), либо None для пустых строк</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;header&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;seq&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FastaReader.read">
+<a class="viewcode-back" href="../fasta.html#fasta.FastaReader.read">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Генератор, который читает файл по записям</span>
+<span class="sd">            Находит заголовок (строка со знаком &gt;), собирает последовательность и отдает готовый объект Seq</span>
+<span class="sd">            </span>
+<span class="sd">            Используется yield, чтобы не грузить весь файл в память сразу — это важно для больших файлов</span>
+<span class="sd">            </span>
+<span class="sd">            Если файл не в формате FASTA — выдает ошибку ValueError</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="c1">#проверяем, что файл в нужном формате</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid_fasta</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Файл не соответствует формату FASTA&quot;</span><span class="p">)</span>
+    
+            <span class="c1">#создаем переменные для хранения текущей записи</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span>    <span class="c1">#пока заголовка нет</span>
+            <span class="n">seq_chunks</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1">#пока последовательность пустая</span>
+    
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                    <span class="n">parsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">parsed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    
+                    <span class="n">kind</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">parsed</span>
+                    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;header&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="k">yield</span> <span class="n">Seq</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seq_chunks</span><span class="p">))</span>
+                        <span class="n">header</span> <span class="o">=</span> <span class="n">value</span>
+                        <span class="n">seq_chunks</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">seq_chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    
+            <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">Seq</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seq_chunks</span><span class="p">))</span></div>
+</div>
+
+
+
+
+<span class="c1">#функция для подсчета средней длины</span>
+<div class="viewcode-block" id="get_average_length">
+<a class="viewcode-back" href="../fasta.html#fasta.get_average_length">[документация]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_average_length</span><span class="p">(</span><span class="n">reader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Вычисляет среднюю длину последовательностей за один проход по генератору</span>
+<span class="sd">    </span>
+<span class="sd">    reader — объект класса-наследника Reader (например, FastaReader)</span>
+<span class="sd">    Возвращает среднюю длину как float, или 0.0 если файл пустой</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">total_length</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+        <span class="n">total_length</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="k">return</span> <span class="n">total_length</span> <span class="o">/</span>  <span class="n">count</span> </div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Копырина Александра, Асылкожаева Дария, Никонорова Алина, Ким Дианна. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

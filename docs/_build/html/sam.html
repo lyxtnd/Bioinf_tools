@@ -1,0 +1,529 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sam module &mdash; документация Bioinf_tools 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=e35015f7"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=cd1d70c9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="vcf module" href="vcf.html" />
+    <link rel="prev" title="fasta module" href="fasta.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Bioinf_tools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Bioinf_tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html">FASTQ module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abstract_readers.html">abstract_readers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fasta.html">fasta module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">sam module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sam.Alignment"><code class="docutils literal notranslate"><span class="pre">Alignment</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.qname"><code class="docutils literal notranslate"><span class="pre">Alignment.qname</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.flag"><code class="docutils literal notranslate"><span class="pre">Alignment.flag</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.rname"><code class="docutils literal notranslate"><span class="pre">Alignment.rname</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.pos"><code class="docutils literal notranslate"><span class="pre">Alignment.pos</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.mapq"><code class="docutils literal notranslate"><span class="pre">Alignment.mapq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.cigar"><code class="docutils literal notranslate"><span class="pre">Alignment.cigar</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.rnext"><code class="docutils literal notranslate"><span class="pre">Alignment.rnext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.pnext"><code class="docutils literal notranslate"><span class="pre">Alignment.pnext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.tlen"><code class="docutils literal notranslate"><span class="pre">Alignment.tlen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.seq"><code class="docutils literal notranslate"><span class="pre">Alignment.seq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.qual"><code class="docutils literal notranslate"><span class="pre">Alignment.qual</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.tags"><code class="docutils literal notranslate"><span class="pre">Alignment.tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.end_pos"><code class="docutils literal notranslate"><span class="pre">Alignment.end_pos</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.Alignment.is_mapped"><code class="docutils literal notranslate"><span class="pre">Alignment.is_mapped</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#sam.SamHeader"><code class="docutils literal notranslate"><span class="pre">SamHeader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamHeader.raw_lines"><code class="docutils literal notranslate"><span class="pre">SamHeader.raw_lines</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamHeader.headers"><code class="docutils literal notranslate"><span class="pre">SamHeader.headers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamHeader.reference"><code class="docutils literal notranslate"><span class="pre">SamHeader.reference</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamHeader.get_group"><code class="docutils literal notranslate"><span class="pre">SamHeader.get_group()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#sam.SamReader"><code class="docutils literal notranslate"><span class="pre">SamReader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.count_alignments"><code class="docutils literal notranslate"><span class="pre">SamReader.count_alignments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.count_alignments_by_chromosome"><code class="docutils literal notranslate"><span class="pre">SamReader.count_alignments_by_chromosome()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.filter_alignments"><code class="docutils literal notranslate"><span class="pre">SamReader.filter_alignments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.get_alignments_in_region"><code class="docutils literal notranslate"><span class="pre">SamReader.get_alignments_in_region()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.get_chromosomes"><code class="docutils literal notranslate"><span class="pre">SamReader.get_chromosomes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.get_header"><code class="docutils literal notranslate"><span class="pre">SamReader.get_header()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.get_reference_genome"><code class="docutils literal notranslate"><span class="pre">SamReader.get_reference_genome()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.read"><code class="docutils literal notranslate"><span class="pre">SamReader.read()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.read_alignments"><code class="docutils literal notranslate"><span class="pre">SamReader.read_alignments()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sam.SamReader.validate_coordinate"><code class="docutils literal notranslate"><span class="pre">SamReader.validate_coordinate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vcf.html">vcf module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Bioinf_tools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">Bioinf_tools</a></li>
+      <li class="breadcrumb-item active">sam module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sam.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-sam">
+<span id="sam-module"></span><h1>sam module<a class="headerlink" href="#module-sam" title="Ссылка на этот заголовок"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sam.Alignment">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sam.</span></span><span class="sig-name descname"><span class="pre">Alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cigar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rnext</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pnext</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tlen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">optional_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sam.html#Alignment"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.Alignment" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Представляет отдельное выравнивание прочтения из SAM-файла.</p>
+<p>Хранит информацию об имени прочтения, флаге, хромосоме, позиции,
+CIGAR-строке, качестве и дополнительных опциональных тегах.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.qname">
+<span class="sig-name descname"><span class="pre">qname</span></span><a class="headerlink" href="#sam.Alignment.qname" title="Ссылка на это определение"></a></dt>
+<dd><p>Имя прочтения (Query template NAME).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.flag">
+<span class="sig-name descname"><span class="pre">flag</span></span><a class="headerlink" href="#sam.Alignment.flag" title="Ссылка на это определение"></a></dt>
+<dd><p>Битовый флаг выравнивания.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.rname">
+<span class="sig-name descname"><span class="pre">rname</span></span><a class="headerlink" href="#sam.Alignment.rname" title="Ссылка на это определение"></a></dt>
+<dd><p>Название хромосомы/референса.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.pos">
+<span class="sig-name descname"><span class="pre">pos</span></span><a class="headerlink" href="#sam.Alignment.pos" title="Ссылка на это определение"></a></dt>
+<dd><p>Геномная позиция начала выравнивания (1-based).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.mapq">
+<span class="sig-name descname"><span class="pre">mapq</span></span><a class="headerlink" href="#sam.Alignment.mapq" title="Ссылка на это определение"></a></dt>
+<dd><p>Качество выравнивания (Mapping Quality).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.cigar">
+<span class="sig-name descname"><span class="pre">cigar</span></span><a class="headerlink" href="#sam.Alignment.cigar" title="Ссылка на это определение"></a></dt>
+<dd><p>CIGAR-строка операций выравнивания.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.rnext">
+<span class="sig-name descname"><span class="pre">rnext</span></span><a class="headerlink" href="#sam.Alignment.rnext" title="Ссылка на это определение"></a></dt>
+<dd><p>Хромосома следующего прочтения в паре.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.pnext">
+<span class="sig-name descname"><span class="pre">pnext</span></span><a class="headerlink" href="#sam.Alignment.pnext" title="Ссылка на это определение"></a></dt>
+<dd><p>Позиция следующего прочтения в паре.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.tlen">
+<span class="sig-name descname"><span class="pre">tlen</span></span><a class="headerlink" href="#sam.Alignment.tlen" title="Ссылка на это определение"></a></dt>
+<dd><p>Наблюдаемая длина фрагмента (Template Length).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.seq">
+<span class="sig-name descname"><span class="pre">seq</span></span><a class="headerlink" href="#sam.Alignment.seq" title="Ссылка на это определение"></a></dt>
+<dd><p>Нуклеотидная последовательность прочтения.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.qual">
+<span class="sig-name descname"><span class="pre">qual</span></span><a class="headerlink" href="#sam.Alignment.qual" title="Ссылка на это определение"></a></dt>
+<dd><p>Строка качества Phred.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.Alignment.tags">
+<span class="sig-name descname"><span class="pre">tags</span></span><a class="headerlink" href="#sam.Alignment.tags" title="Ссылка на это определение"></a></dt>
+<dd><p>Дополнительные теги выравнивания.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sam.Alignment.end_pos">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">end_pos</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#sam.Alignment.end_pos" title="Ссылка на это определение"></a></dt>
+<dd><p>Вычисляет конечную координату выравнивания на референсе по CIGAR.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sam.Alignment.is_mapped">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_mapped</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#sam.Alignment.is_mapped" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, картировано ли прочтение (флаг 0x4).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sam.SamHeader">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sam.</span></span><span class="sig-name descname"><span class="pre">SamHeader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_lines</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sam.html#SamHeader"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamHeader" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Хранит информацию из заголовка SAM-файла.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.SamHeader.raw_lines">
+<span class="sig-name descname"><span class="pre">raw_lines</span></span><a class="headerlink" href="#sam.SamHeader.raw_lines" title="Ссылка на это определение"></a></dt>
+<dd><p>Исходные строки заголовка, начинающиеся с „&#64;“.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.SamHeader.headers">
+<span class="sig-name descname"><span class="pre">headers</span></span><a class="headerlink" href="#sam.SamHeader.headers" title="Ссылка на это определение"></a></dt>
+<dd><p>Разобранные группы метаданных
+по тегам (HD, SQ, RG, PG, CO).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, list[dict[str, str]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sam.SamHeader.reference">
+<span class="sig-name descname"><span class="pre">reference</span></span><a class="headerlink" href="#sam.SamHeader.reference" title="Ссылка на это определение"></a></dt>
+<dd><p>Информация о референсном геноме или None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamHeader.get_group">
+<span class="sig-name descname"><span class="pre">get_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/sam.html#SamHeader.get_group"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamHeader.get_group" title="Ссылка на это определение"></a></dt>
+<dd><p>Возвращает информацию по заданной группе заголовков.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tag</strong> – Название группы, например „PG“, <a class="reference external" href="mailto:'&#37;&#52;&#48;PG">„<span>&#64;</span>PG</a>“, „RG“, <a class="reference external" href="mailto:'&#37;&#52;&#48;RG">„<span>&#64;</span>RG</a>“.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список словарей с атрибутами для данной группы заголовков.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sam.SamReader">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sam.</span></span><span class="sig-name descname"><span class="pre">SamReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sam.html#SamReader"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <a class="reference internal" href="abstract_readers.html#abstract_readers.GenomicDataReader" title="abstract_readers.GenomicDataReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenomicDataReader</span></code></a></p>
+<p>Читает SAM-файл и предоставляет методы для работы с выравниваниями.</p>
+<p>Позволяет разбирать отдельные строки выравниваний, читать записи
+последовательно через генератор, получать заголовок с метаданными,
+считать статистику по хромосомам и искать выравнивания в регионах.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.count_alignments">
+<span class="sig-name descname"><span class="pre">count_alignments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/sam.html#SamReader.count_alignments"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.count_alignments" title="Ссылка на это определение"></a></dt>
+<dd><p>Подсчитывает общее количество выравниваний в SAM-файле.</p>
+<p>Считывает выравнивания последовательно, не сохраняя их все
+одновременно в памяти.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Общее количество записей с выравниваниями.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.count_alignments_by_chromosome">
+<span class="sig-name descname"><span class="pre">count_alignments_by_chromosome</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/sam.html#SamReader.count_alignments_by_chromosome"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.count_alignments_by_chromosome" title="Ссылка на это определение"></a></dt>
+<dd><p>Подсчитывает количество выравниваний на каждой хромосоме.</p>
+<p>Собирает названия хромосом в таблицу pandas, группирует записи
+по хромосоме и подсчитывает количество выравниваний в каждой группе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame со столбцами chrom и count, содержащими
+названия хромосом и количество выравниваний соответственно.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.filter_alignments">
+<span class="sig-name descname"><span class="pre">filter_alignments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact_match</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#sam.Alignment" title="sam.Alignment"><span class="pre">Alignment</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/sam.html#SamReader.filter_alignments"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.filter_alignments" title="Ссылка на это определение"></a></dt>
+<dd><p>Фильтрует выравнивания по битовому флагу SAM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flag</strong> – Битовый флаг для фильтрации.</p></li>
+<li><p><strong>exact_match</strong> – Если True, флаг должен совпадать точно;
+если False, проверяется наличие бита через битовое И.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список выравниваний, удовлетворяющих условию фильтрации.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.get_alignments_in_region">
+<span class="sig-name descname"><span class="pre">get_alignments_in_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chrom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#sam.Alignment" title="sam.Alignment"><span class="pre">Alignment</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/sam.html#SamReader.get_alignments_in_region"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.get_alignments_in_region" title="Ссылка на это определение"></a></dt>
+<dd><p>Возвращает выравнивания, расположенные в заданном геномном интервале.</p>
+<p>Учитывает только картированные выравнивания указанной хромосомы,
+пересекающие интервал [start, end] (аналог bedtools intersect).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chrom</strong> – Название хромосомы.</p></li>
+<li><p><strong>start</strong> – Начальная позиция интервала, начиная с 1.</p></li>
+<li><p><strong>end</strong> – Конечная позиция интервала.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список выравниваний, попадающих в заданный интервал.</p>
+</dd>
+<dt class="field-odd">Исключение<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Если начальная позиция меньше 1 или конец
+    интервала расположен раньше его начала.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.get_chromosomes">
+<span class="sig-name descname"><span class="pre">get_chromosomes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/sam.html#SamReader.get_chromosomes"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.get_chromosomes" title="Ссылка на это определение"></a></dt>
+<dd><p>Возвращает список уникальных хромосом, представленных в файле.</p>
+<p>Хромосомы извлекаются из заголовков &#64;SQ либо собираются непосредственно
+из записей выравнивания при отсутствии заголовка.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Список названий хромосом.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.get_header">
+<span class="sig-name descname"><span class="pre">get_header</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sam.SamHeader" title="sam.SamHeader"><span class="pre">SamHeader</span></a></span></span><a class="reference internal" href="_modules/sam.html#SamReader.get_header"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.get_header" title="Ссылка на это определение"></a></dt>
+<dd><p>Извлекает заголовок SAM-файла.</p>
+<p>Собирает все строки метаданных, начинающиеся с символа „&#64;“.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Объект SamHeader с информацией из заголовка.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.get_reference_genome">
+<span class="sig-name descname"><span class="pre">get_reference_genome</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/sam.html#SamReader.get_reference_genome"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.get_reference_genome" title="Ссылка на это определение"></a></dt>
+<dd><p>Возвращает информацию о референсном геноме.</p>
+<p>Извлекает название или описание референсного генома
+из метаданных заголовка SAM-файла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Информация о референсном геноме или сообщение,
+если она не указана в заголовке.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sam.html#SamReader.read"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.read" title="Ссылка на это определение"></a></dt>
+<dd><p>Последовательно читает выравнивания из SAM-файла.</p>
+<p>Пропускает пустые строки и строки заголовка.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Alignment</em> – Очередное разобранное выравнивание.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.read_alignments">
+<span class="sig-name descname"><span class="pre">read_alignments</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#sam.Alignment" title="sam.Alignment"><span class="pre">Alignment</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/sam.html#SamReader.read_alignments"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.read_alignments" title="Ссылка на это определение"></a></dt>
+<dd><p>Считывает все выравнивания из SAM-файла в список.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Список объектов Alignment.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sam.SamReader.validate_coordinate">
+<span class="sig-name descname"><span class="pre">validate_coordinate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chrom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/sam.html#SamReader.validate_coordinate"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#sam.SamReader.validate_coordinate" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет корректность геномной координаты.</p>
+<p>Проверяет, существует ли указанная хромосома, является ли
+позиция положительной и не превышает ли она длину хромосомы,
+если длина указана в метаданных &#64;SQ.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chrom</strong> – Название хромосомы.</p></li>
+<li><p><strong>pos</strong> – Геномная позиция для проверки.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>True, если координата считается допустимой, иначе False.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="fasta.html" class="btn btn-neutral float-left" title="fasta module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="vcf.html" class="btn btn-neutral float-right" title="vcf module" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Копырина Александра, Асылкожаева Дария, Никонорова Алина, Ким Дианна. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

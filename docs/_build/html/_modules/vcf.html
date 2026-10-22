@@ -1,0 +1,580 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vcf &mdash; документация Bioinf_tools 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e35015f7"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Bioinf_tools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Bioinf_tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bioinf_tools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">vcf</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код vcf</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abstract_readers</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenomicDataReader</span>
+
+<div class="viewcode-block" id="Variant">
+<a class="viewcode-back" href="../vcf.html#vcf.Variant">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Variant</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Представляет генетический вариант из VCF-файла.</span>
+
+<span class="sd">       Хранит информацию о хромосоме, позиции, аллелях, качестве,</span>
+<span class="sd">       статусе фильтрации и дополнительных данных варианта.</span>
+
+<span class="sd">       Attributes:</span>
+<span class="sd">           chrom (str): Название хромосомы.</span>
+<span class="sd">           pos (int): Геномная позиция варианта.</span>
+<span class="sd">           id (str | None): Идентификатор варианта или None, если он отсутствует.</span>
+<span class="sd">           ref (str): Референсный аллель.</span>
+<span class="sd">           alt (str): Альтернативный аллель.</span>
+<span class="sd">           qual (float | None): Оценка качества варианта или None.</span>
+<span class="sd">           filter (str): Статус фильтрации варианта.</span>
+<span class="sd">           info (list[str]): Дополнительная информация из поля INFO.</span>
+<span class="sd">           format (str | None): Формат данных образцов из поля FORMAT.</span>
+<span class="sd">           samples (list[str]): Данные отдельных образцов.</span>
+<span class="sd">       &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">variant_id</span><span class="p">:</span><span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="n">ref</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">alt</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">qual</span><span class="p">:</span><span class="nb">float</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="nb">filter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Инициализирует объект генетического варианта.</span>
+
+<span class="sd">               Args:</span>
+<span class="sd">                   chrom: Название хромосомы.</span>
+<span class="sd">                   pos: Геномная позиция варианта.</span>
+<span class="sd">                   variant_id: Идентификатор варианта или None.</span>
+<span class="sd">                   ref: Референсный аллель.</span>
+<span class="sd">                   alt: Альтернативный аллель.</span>
+<span class="sd">                   qual: Оценка качества варианта или None.</span>
+<span class="sd">                   filter: Статус фильтрации.</span>
+<span class="sd">                   info: Список дополнительных сведений о варианте.</span>
+<span class="sd">                   *args: Необязательные данные, где первый элемент —</span>
+<span class="sd">                       поле FORMAT, а остальные — данные образцов.</span>
+<span class="sd">               &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chrom</span> <span class="o">=</span> <span class="n">chrom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">variant_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alt</span> <span class="o">=</span> <span class="n">alt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qual</span> <span class="o">=</span> <span class="n">qual</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="nb">filter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="n">info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
+
+
+
+<div class="viewcode-block" id="VcfHeader">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfHeader">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VcfHeader</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Хранит информацию из заголовка VCF-файла.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            metadata (list[str]): Строки метаданных, начинающиеся с &#39;##&#39;.</span>
+<span class="sd">            columns (list[str]): Названия столбцов заголовка.</span>
+<span class="sd">            samples (list[str]): Названия образцов.</span>
+<span class="sd">            file_format (str | None): Версия формата VCF или None.</span>
+<span class="sd">            reference (str | None): Информация о референсном геноме или None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">columns</span><span class="p">:</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">samples</span><span class="p">:</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">file_format</span><span class="p">:</span><span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span><span class="nb">str</span><span class="o">|</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Инициализирует объект заголовка VCF-файла.</span>
+
+<span class="sd">               Args:</span>
+<span class="sd">                   metadata: Список строк метаданных.</span>
+<span class="sd">                   columns: Список названий столбцов.</span>
+<span class="sd">                   samples: Список названий образцов.</span>
+<span class="sd">                   file_format: Версия формата VCF или None.</span>
+<span class="sd">                   reference: Информация о референсном геноме или None.</span>
+<span class="sd">               &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="n">file_format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span></div>
+
+
+<div class="viewcode-block" id="Genotype">
+<a class="viewcode-back" href="../vcf.html#vcf.Genotype">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Genotype</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Представляет генотип из поля GT VCF-записи.</span>
+
+<span class="sd">        Attributes:</span>
+<span class="sd">            gt (str): Исходная строка генотипа.</span>
+<span class="sd">            separator (str): Разделитель аллелей: &#39;/&#39; или &#39;|&#39;.</span>
+<span class="sd">            gt_ls (list[int | None]): Список индексов аллелей.</span>
+<span class="sd">                None обозначает отсутствующий аллель.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gt</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Инициализирует объект генотипа и разбирает его аллели.</span>
+
+<span class="sd">                Args:</span>
+<span class="sd">                    gt: Строка генотипа, например &#39;0/1&#39;, &#39;1|1&#39; или &#39;./.&#39;.</span>
+
+<span class="sd">                Raises:</span>
+<span class="sd">                    ValueError: Если значение аллеля не является целым числом</span>
+<span class="sd">                        и не обозначено точкой.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gt</span> <span class="o">=</span> <span class="n">gt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span> <span class="k">if</span> <span class="s2">&quot;|&quot;</span> <span class="ow">in</span> <span class="n">gt</span> <span class="k">else</span> <span class="s2">&quot;/&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gt_ls</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">allele</span><span class="p">)</span> <span class="k">if</span> <span class="n">allele</span> <span class="o">!=</span> <span class="s2">&quot;.&quot;</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="k">for</span> <span class="n">allele</span> <span class="ow">in</span> <span class="n">gt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>    <span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Некорректный генотип: </span><span class="si">{</span><span class="n">gt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VcfReader">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VcfReader</span><span class="p">(</span><span class="n">GenomicDataReader</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Читает VCF-файл и предоставляет методы для работы с вариантами.</span>
+<span class="sd">        Позволяет разбирать отдельные строки с вариантами, читать записи</span>
+<span class="sd">        последовательно, получать список вариантов и извлекать заголовок</span>
+<span class="sd">        файла с метаданными и информацией об образцах.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Variant</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Разбирает строку VCF и создаёт объект Variant.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line: Строка файла, содержащая информацию о варианте.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Объект Variant при успешном разборе или None,</span>
+<span class="sd">            если строка содержит недостаточно полей либо</span>
+<span class="sd">            некорректную позицию.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ls</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">variant_id</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">ls</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span> <span class="k">else</span> <span class="n">ls</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">qual</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">ls</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">qual</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">ls</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;.&quot;</span> <span class="k">else</span> <span class="n">ls</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Variant</span><span class="p">(</span>
+            <span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">pos</span><span class="p">,</span>
+            <span class="n">variant_id</span><span class="p">,</span>
+            <span class="n">ls</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+            <span class="n">ls</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+            <span class="n">qual</span><span class="p">,</span>
+            <span class="n">ls</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+            <span class="n">info</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">ls</span><span class="p">[</span><span class="mi">8</span><span class="p">:]</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="VcfReader.read">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.read">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Последовательно читает варианты из VCF-файла.</span>
+<span class="sd">        Пропускает пустые строки и строки заголовка.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Variant: Очередной разобранный генетический вариант.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="n">variant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">variant</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">variant</span></div>
+
+
+<div class="viewcode-block" id="VcfReader.read_variants">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.read_variants">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_variants</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variant</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Считывает все варианты из VCF-файла в список.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список объектов Variant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="VcfReader.get_header">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.get_header">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_header</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VcfHeader</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Извлекает заголовок VCF-файла.</span>
+
+<span class="sd">        Собирает строки метаданных, названия столбцов,</span>
+<span class="sd">        названия образцов, версию формата и сведения</span>
+<span class="sd">        о референсном геноме.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Объект VcfHeader с информацией из заголовка.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;##&quot;</span><span class="p">):</span>
+                    <span class="n">metadata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#CHROM&quot;</span><span class="p">):</span>
+                    <span class="n">columns</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                    <span class="k">break</span>
+
+        <span class="n">file_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">reference</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;##fileformat=&quot;</span><span class="p">):</span>
+                <span class="n">file_format</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;##reference=&quot;</span><span class="p">):</span>
+                <span class="n">reference</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="mi">9</span><span class="p">:]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">9</span> <span class="k">else</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="n">VcfHeader</span><span class="p">(</span>
+            <span class="n">metadata</span><span class="p">,</span>
+            <span class="n">columns</span><span class="p">,</span>
+            <span class="n">samples</span><span class="p">,</span>
+            <span class="n">file_format</span><span class="p">,</span>
+            <span class="n">reference</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VcfReader.get_chromosomes">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.get_chromosomes">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_chromosomes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Возвращает список уникальных хромосом, в которых обнаружены варианты.</span>
+
+<span class="sd">        Хромосомы собираются непосредственно из записей вариантов VCF.</span>
+<span class="sd">        Порядок хромосом соответствует их первому появлению в файле.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: Список уникальных названий хромосом,</span>
+<span class="sd">            в которых присутствует хотя бы один вариант.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">chromosomes_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">chromosomes_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">chrom</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chromosomes_set</span><span class="p">:</span>
+                <span class="n">chromosomes_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">chrom</span><span class="p">)</span>
+                <span class="n">chromosomes_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">chrom</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">chromosomes_list</span></div>
+
+
+
+<div class="viewcode-block" id="VcfReader.get_reference_genome">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.get_reference_genome">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_reference_genome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает информацию о референсном геноме.</span>
+
+<span class="sd">        Извлекает название или описание референсного генома</span>
+<span class="sd">        из метаданных заголовка VCF-файла.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Информация о референсном геноме или сообщение,</span>
+<span class="sd">            если она не указана в заголовке.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span><span class="o">.</span><span class="n">reference</span>
+        <span class="k">if</span> <span class="n">reference</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">reference</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;Информация о референсном геноме не указана&#39;</span></div>
+
+
+<div class="viewcode-block" id="VcfReader.validate_coordinate">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.validate_coordinate">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_coordinate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет корректность геномной координаты.</span>
+
+<span class="sd">        Проверяет, существует ли указанная хромосома среди хромосом,</span>
+<span class="sd">        содержащих варианты, является ли позиция положительной и не</span>
+<span class="sd">        превышает ли она длину хромосомы, если длина указана в метаданных.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chrom: Название хромосомы.</span>
+<span class="sd">            pos: Геномная позиция для проверки.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True, если координата считается допустимой, иначе False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">chromosomes_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chromosomes</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">chrom</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chromosomes_list</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span><span class="o">.</span><span class="n">metadata</span>
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">metadata</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;##contig=&quot;</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;##contig=&lt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+            <span class="n">contig_id</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">length_chrom</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+                <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;ID&quot;</span><span class="p">:</span>
+                    <span class="n">contig_id</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">length_chrom</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">contig_id</span> <span class="o">==</span> <span class="n">chrom</span> <span class="ow">and</span> <span class="n">length_chrom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pos</span> <span class="o">&gt;</span> <span class="n">length_chrom</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="VcfReader.count_variants">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.count_variants">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_variants</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Подсчитывает общее количество вариантов в VCF-файле.</span>
+
+<span class="sd">        Считывает варианты последовательно, не сохраняя их все</span>
+<span class="sd">        одновременно в памяти.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Общее количество записей с вариантами.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">cnt</span></div>
+
+
+
+<div class="viewcode-block" id="VcfReader.filter_by_quality">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.filter_by_quality">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filter_by_quality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_qual</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variant</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает варианты с качеством не ниже заданного порога.</span>
+
+<span class="sd">        Варианты без указанной оценки качества пропускаются.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            min_qual: Минимально допустимая оценка качества.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список вариантов, удовлетворяющих условию качества.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">variant_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">qual</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">qual</span> <span class="o">&gt;=</span> <span class="n">min_qual</span><span class="p">:</span>
+                    <span class="n">variant_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">variant_list</span></div>
+
+
+
+<div class="viewcode-block" id="VcfReader.get_genotype">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.get_genotype">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_genotype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">variant</span><span class="p">:</span> <span class="n">Variant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Genotype</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает генотип указанного образца для заданного варианта.</span>
+
+<span class="sd">        Находит образец в заголовке и поле GT в формате FORMAT,</span>
+<span class="sd">        после чего извлекает соответствующее значение из данных образца.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sample: Название образца.</span>
+<span class="sd">            variant: Объект генетического варианта.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Объект Genotype, если генотип найден, иначе None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_header</span><span class="p">()</span><span class="o">.</span><span class="n">samples</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">samples</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">variant</span><span class="o">.</span><span class="n">format</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">format_ls</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;GT&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">format_ls</span> <span class="ow">or</span> <span class="n">sample</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">list_index</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+        <span class="n">format_index</span> <span class="o">=</span> <span class="n">format_ls</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;GT&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">list_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variant</span><span class="o">.</span><span class="n">samples</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">sample_fields</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">samples</span><span class="p">[</span><span class="n">list_index</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">format_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_fields</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">Genotype</span><span class="p">(</span><span class="n">sample_fields</span><span class="p">[</span><span class="n">format_index</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="VcfReader.count_variants_by_chromosome">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.count_variants_by_chromosome">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_variants_by_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Подсчитывает количество вариантов на каждой хромосоме.</span>
+
+<span class="sd">        Собирает названия хромосом в таблицу pandas, группирует записи</span>
+<span class="sd">        по хромосоме и подсчитывает количество вариантов в каждой группе.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame со столбцами chrom и count, содержащими</span>
+<span class="sd">            названия хромосом и количество вариантов соответственно.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;chrom&#39;</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">chrom</span><span class="p">})</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;chrom&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="VcfReader.get_variants_in_region">
+<a class="viewcode-back" href="../vcf.html#vcf.VcfReader.get_variants_in_region">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_variants_in_region</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">chrom</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variant</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Возвращает варианты, расположенные в заданном геномном интервале.</span>
+
+<span class="sd">        Учитывает только варианты указанной хромосомы, позиция которых</span>
+<span class="sd">        находится между началом и концом интервала включительно.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chrom: Название хромосомы.</span>
+<span class="sd">            start: Начальная позиция интервала, начиная с 1.</span>
+<span class="sd">            end: Конечная позиция интервала.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Список вариантов, попадающих в заданный интервал.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Если начальная позиция меньше 1 или конец</span>
+<span class="sd">                интервала расположен раньше его начала.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">end</span> <span class="ow">or</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Неверно заданы координаты&#39;</span><span class="p">)</span>
+
+        <span class="n">variants_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">chrom</span> <span class="o">==</span> <span class="n">chrom</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">var</span><span class="o">.</span><span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">end</span><span class="p">:</span>
+                <span class="n">variants_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">variants_list</span></div>
+</div>
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Копырина Александра, Асылкожаева Дария, Никонорова Алина, Ким Дианна. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

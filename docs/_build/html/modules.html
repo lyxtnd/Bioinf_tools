@@ -1,0 +1,255 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bioinf_tools &mdash; документация Bioinf_tools 1.0.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=e35015f7"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/translations.js?v=cd1d70c9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="next" title="FASTQ module" href="FASTQ.html" />
+    <link rel="prev" title="Bioinf_tools documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Bioinf_tools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Bioinf_tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html">FASTQ module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abstract_readers.html">abstract_readers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fasta.html">fasta module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sam.html">sam module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vcf.html">vcf module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Bioinf_tools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Bioinf_tools</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bioinf-tools">
+<h1>Bioinf_tools<a class="headerlink" href="#bioinf-tools" title="Ссылка на этот заголовок"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="FASTQ.html">FASTQ module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html#FASTQ.FastqParser"><code class="docutils literal notranslate"><span class="pre">FastqParser</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="FASTQ.html#FASTQ.FastqParser.average_length"><code class="docutils literal notranslate"><span class="pre">FastqParser.average_length()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="FASTQ.html#FASTQ.FastqParser.count_sequences"><code class="docutils literal notranslate"><span class="pre">FastqParser.count_sequences()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="FASTQ.html#FASTQ.FastqParser.length_distribution"><code class="docutils literal notranslate"><span class="pre">FastqParser.length_distribution()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="FASTQ.html#FASTQ.FastqParser.per_base_content"><code class="docutils literal notranslate"><span class="pre">FastqParser.per_base_content()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="FASTQ.html#FASTQ.FastqParser.per_base_quality"><code class="docutils literal notranslate"><span class="pre">FastqParser.per_base_quality()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html#FASTQ.FastqRecord"><code class="docutils literal notranslate"><span class="pre">FastqRecord</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="FASTQ.html#FASTQ.FastqRecord.length"><code class="docutils literal notranslate"><span class="pre">FastqRecord.length</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="FASTQ.html#FASTQ.FastqRecord.phred_scores"><code class="docutils literal notranslate"><span class="pre">FastqRecord.phred_scores()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html#FASTQ.parser_factory"><code class="docutils literal notranslate"><span class="pre">parser_factory()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html#FASTQ.plot_all"><code class="docutils literal notranslate"><span class="pre">plot_all()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html#FASTQ.plot_length_distribution"><code class="docutils literal notranslate"><span class="pre">plot_length_distribution()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html#FASTQ.plot_per_base_content"><code class="docutils literal notranslate"><span class="pre">plot_per_base_content()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FASTQ.html#FASTQ.plot_per_base_quality"><code class="docutils literal notranslate"><span class="pre">plot_per_base_quality()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="abstract_readers.html">abstract_readers module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="abstract_readers.html#abstract_readers.GenomicDataReader"><code class="docutils literal notranslate"><span class="pre">GenomicDataReader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="abstract_readers.html#abstract_readers.GenomicDataReader.get_chromosomes"><code class="docutils literal notranslate"><span class="pre">GenomicDataReader.get_chromosomes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="abstract_readers.html#abstract_readers.GenomicDataReader.get_reference_genome"><code class="docutils literal notranslate"><span class="pre">GenomicDataReader.get_reference_genome()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="abstract_readers.html#abstract_readers.GenomicDataReader.validate_coordinate"><code class="docutils literal notranslate"><span class="pre">GenomicDataReader.validate_coordinate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="abstract_readers.html#abstract_readers.Reader"><code class="docutils literal notranslate"><span class="pre">Reader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="abstract_readers.html#abstract_readers.Reader.close"><code class="docutils literal notranslate"><span class="pre">Reader.close()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="abstract_readers.html#abstract_readers.Reader.read"><code class="docutils literal notranslate"><span class="pre">Reader.read()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fasta.html">fasta module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fasta.html#fasta.FastaReader"><code class="docutils literal notranslate"><span class="pre">FastaReader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fasta.html#fasta.FastaReader.is_valid_fasta"><code class="docutils literal notranslate"><span class="pre">FastaReader.is_valid_fasta()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fasta.html#fasta.FastaReader.read"><code class="docutils literal notranslate"><span class="pre">FastaReader.read()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fasta.html#fasta.Seq"><code class="docutils literal notranslate"><span class="pre">Seq</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fasta.html#fasta.Seq.alphabet"><code class="docutils literal notranslate"><span class="pre">Seq.alphabet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fasta.html#fasta.Seq.header"><code class="docutils literal notranslate"><span class="pre">Seq.header</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fasta.html#fasta.Seq.sequence"><code class="docutils literal notranslate"><span class="pre">Seq.sequence</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fasta.html#fasta.get_average_length"><code class="docutils literal notranslate"><span class="pre">get_average_length()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sam.html">sam module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sam.html#sam.Alignment"><code class="docutils literal notranslate"><span class="pre">Alignment</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.qname"><code class="docutils literal notranslate"><span class="pre">Alignment.qname</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.flag"><code class="docutils literal notranslate"><span class="pre">Alignment.flag</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.rname"><code class="docutils literal notranslate"><span class="pre">Alignment.rname</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.pos"><code class="docutils literal notranslate"><span class="pre">Alignment.pos</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.mapq"><code class="docutils literal notranslate"><span class="pre">Alignment.mapq</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.cigar"><code class="docutils literal notranslate"><span class="pre">Alignment.cigar</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.rnext"><code class="docutils literal notranslate"><span class="pre">Alignment.rnext</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.pnext"><code class="docutils literal notranslate"><span class="pre">Alignment.pnext</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.tlen"><code class="docutils literal notranslate"><span class="pre">Alignment.tlen</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.seq"><code class="docutils literal notranslate"><span class="pre">Alignment.seq</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.qual"><code class="docutils literal notranslate"><span class="pre">Alignment.qual</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.tags"><code class="docutils literal notranslate"><span class="pre">Alignment.tags</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.end_pos"><code class="docutils literal notranslate"><span class="pre">Alignment.end_pos</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.Alignment.is_mapped"><code class="docutils literal notranslate"><span class="pre">Alignment.is_mapped</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sam.html#sam.SamHeader"><code class="docutils literal notranslate"><span class="pre">SamHeader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamHeader.raw_lines"><code class="docutils literal notranslate"><span class="pre">SamHeader.raw_lines</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamHeader.headers"><code class="docutils literal notranslate"><span class="pre">SamHeader.headers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamHeader.reference"><code class="docutils literal notranslate"><span class="pre">SamHeader.reference</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamHeader.get_group"><code class="docutils literal notranslate"><span class="pre">SamHeader.get_group()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sam.html#sam.SamReader"><code class="docutils literal notranslate"><span class="pre">SamReader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.count_alignments"><code class="docutils literal notranslate"><span class="pre">SamReader.count_alignments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.count_alignments_by_chromosome"><code class="docutils literal notranslate"><span class="pre">SamReader.count_alignments_by_chromosome()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.filter_alignments"><code class="docutils literal notranslate"><span class="pre">SamReader.filter_alignments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.get_alignments_in_region"><code class="docutils literal notranslate"><span class="pre">SamReader.get_alignments_in_region()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.get_chromosomes"><code class="docutils literal notranslate"><span class="pre">SamReader.get_chromosomes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.get_header"><code class="docutils literal notranslate"><span class="pre">SamReader.get_header()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.get_reference_genome"><code class="docutils literal notranslate"><span class="pre">SamReader.get_reference_genome()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.read"><code class="docutils literal notranslate"><span class="pre">SamReader.read()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.read_alignments"><code class="docutils literal notranslate"><span class="pre">SamReader.read_alignments()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="sam.html#sam.SamReader.validate_coordinate"><code class="docutils literal notranslate"><span class="pre">SamReader.validate_coordinate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vcf.html">vcf module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vcf.html#vcf.Genotype"><code class="docutils literal notranslate"><span class="pre">Genotype</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Genotype.gt"><code class="docutils literal notranslate"><span class="pre">Genotype.gt</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Genotype.separator"><code class="docutils literal notranslate"><span class="pre">Genotype.separator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Genotype.gt_ls"><code class="docutils literal notranslate"><span class="pre">Genotype.gt_ls</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vcf.html#vcf.Variant"><code class="docutils literal notranslate"><span class="pre">Variant</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.chrom"><code class="docutils literal notranslate"><span class="pre">Variant.chrom</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.pos"><code class="docutils literal notranslate"><span class="pre">Variant.pos</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.id"><code class="docutils literal notranslate"><span class="pre">Variant.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.ref"><code class="docutils literal notranslate"><span class="pre">Variant.ref</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.alt"><code class="docutils literal notranslate"><span class="pre">Variant.alt</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.qual"><code class="docutils literal notranslate"><span class="pre">Variant.qual</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.filter"><code class="docutils literal notranslate"><span class="pre">Variant.filter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.info"><code class="docutils literal notranslate"><span class="pre">Variant.info</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.format"><code class="docutils literal notranslate"><span class="pre">Variant.format</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.Variant.samples"><code class="docutils literal notranslate"><span class="pre">Variant.samples</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vcf.html#vcf.VcfHeader"><code class="docutils literal notranslate"><span class="pre">VcfHeader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfHeader.metadata"><code class="docutils literal notranslate"><span class="pre">VcfHeader.metadata</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfHeader.columns"><code class="docutils literal notranslate"><span class="pre">VcfHeader.columns</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfHeader.samples"><code class="docutils literal notranslate"><span class="pre">VcfHeader.samples</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfHeader.file_format"><code class="docutils literal notranslate"><span class="pre">VcfHeader.file_format</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfHeader.reference"><code class="docutils literal notranslate"><span class="pre">VcfHeader.reference</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vcf.html#vcf.VcfReader"><code class="docutils literal notranslate"><span class="pre">VcfReader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.count_variants"><code class="docutils literal notranslate"><span class="pre">VcfReader.count_variants()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.count_variants_by_chromosome"><code class="docutils literal notranslate"><span class="pre">VcfReader.count_variants_by_chromosome()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.filter_by_quality"><code class="docutils literal notranslate"><span class="pre">VcfReader.filter_by_quality()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.get_chromosomes"><code class="docutils literal notranslate"><span class="pre">VcfReader.get_chromosomes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.get_genotype"><code class="docutils literal notranslate"><span class="pre">VcfReader.get_genotype()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.get_header"><code class="docutils literal notranslate"><span class="pre">VcfReader.get_header()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.get_reference_genome"><code class="docutils literal notranslate"><span class="pre">VcfReader.get_reference_genome()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.get_variants_in_region"><code class="docutils literal notranslate"><span class="pre">VcfReader.get_variants_in_region()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.read"><code class="docutils literal notranslate"><span class="pre">VcfReader.read()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.read_variants"><code class="docutils literal notranslate"><span class="pre">VcfReader.read_variants()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="vcf.html#vcf.VcfReader.validate_coordinate"><code class="docutils literal notranslate"><span class="pre">VcfReader.validate_coordinate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="index.html" class="btn btn-neutral float-left" title="Bioinf_tools documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+        <a href="FASTQ.html" class="btn btn-neutral float-right" title="FASTQ module" accesskey="n" rel="next">Следующая <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Копырина Александра, Асылкожаева Дария, Никонорова Алина, Ким Дианна. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

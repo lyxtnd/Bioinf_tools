@@ -21,7 +21,7 @@
    git clone https://github.com/lyxtnd/Bioinf_tools.git
    cd Bioinf_tools
 
-2. Создайте виртуальное окружение (по желанию, но так чище):
+2. Создайте виртуальное окружение:
    python -m venv venv
    source venv/bin/activate        # Linux/Mac
    # или

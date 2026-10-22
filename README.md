@@ -21,7 +21,13 @@
    git clone https://github.com/lyxtnd/Bioinf_tools.git
    cd Bioinf_tools
 
-2. Поставьте зависимости:
+2. Создайте виртуальное окружение (по желанию, но так чище):
+   python -m venv venv
+   source venv/bin/activate        # Linux/Mac
+   # или
+   venv\Scripts\activate           # Windows
+
+3. Поставьте зависимости:
    pip install pandas matplotlib seaborn plotly sphinx sphinx-rtd-theme
 
 ## Как запустить демонстрацию
